@@ -17,6 +17,7 @@ package io.jsonwebtoken.impl.crypto;
 
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.lang.Assert;
+import io.jsonwebtoken.lang.Classes;
 
 import java.security.Key;
 
@@ -45,6 +46,10 @@ public class DefaultSignatureValidatorFactory implements SignatureValidatorFacto
             case ES384:
             case ES512:
                 return new EllipticCurveSignatureValidator(alg, key);
+            case HS256KMS:
+            case HS384KMS:
+            case HS512KMS:
+                return Classes.newInstance("lu.incert.kms.jjwt.JwtSigner", new Class[] {SignatureAlgorithm.class, Key.class}, new Object[] {alg, key});
             default:
                 throw new IllegalArgumentException("The '" + alg.name() + "' algorithm cannot be used for signing.");
         }

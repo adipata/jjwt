@@ -106,7 +106,15 @@ public enum SignatureAlgorithm {
      * Java 11 or later or a JCA provider like BouncyCastle to be in the runtime classpath.</b>  If on Java 10 or
      * earlier, BouncyCastle will be used automatically if found in the runtime classpath.
      */
-    PS512("PS512", "RSASSA-PSS using SHA-512 and MGF1 with SHA-512", "RSA", "RSASSA-PSS", false, 512, 2048);
+    PS512("PS512", "RSASSA-PSS using SHA-512 and MGF1 with SHA-512", "RSA", "RSASSA-PSS", false, 512, 2048),
+
+    /**
+     * Support for KMS provider signature
+     */
+    HS256KMS("HS256KMS", "HMAC using SHA-256", "HMAC", "generic256", true, 256, 0, "1.2.840.113549.2.9"),
+    HS384KMS("HS384KMS", "HMAC using SHA-384", "HMAC", "generic384", true, 384, 0, "1.2.840.113549.2.10"),
+    HS512KMS("HS512KMS", "HMAC using SHA-512", "HMAC", "generic512", true, 512, 0, "1.2.840.113549.2.11")
+    ;
 
     //purposefully ordered higher to lower:
     private static final List<SignatureAlgorithm> PREFERRED_HMAC_ALGS = Collections.unmodifiableList(Arrays.asList(
@@ -369,7 +377,11 @@ public enum SignatureAlgorithm {
                 !HS512.jcaName.equalsIgnoreCase(alg) &&
                 !HS256.pkcs12Name.equals(alg) &&
                 !HS384.pkcs12Name.equals(alg) &&
-                !HS512.pkcs12Name.equals(alg)) {
+                !HS512.pkcs12Name.equals(alg) &&
+                !HS256KMS.jcaName.equals(alg) &&
+                !HS384KMS.jcaName.equals(alg) &&
+                !HS512KMS.jcaName.equals(alg)
+            ) {
                 throw new InvalidKeyException("The " + keyType(signing) + " key's algorithm '" + alg +
                     "' does not equal a valid HmacSHA* algorithm name and cannot be used with " + name() + ".");
             }
